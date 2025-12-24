@@ -409,28 +409,6 @@
     "CompatibilityLevel": 1200
   },
   {
-    "ID": "DATECOLUMN_FORMATSTRING",
-    "Name": "[Formatting] Provide format string for \"Date\" columns",
-    "Category": "Formatting",
-    "Description": "Columns of type \"DateTime\" that have \"Month\" in their names should be formatted as \"mm/dd/yyyy\".",
-    "Severity": 3,
-    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "Name.IndexOf(\"Date\", \"OrdinalIgnoreCase\") >= 0 \r\nand \r\nDataType = \"DateTime\" \r\nand \r\nFormatString <> \"mm/dd/yyyy\"",
-    "FixExpression": "FormatString = \"mm/dd/yyyy\"",
-    "CompatibilityLevel": 1200
-  },
-  {
-    "ID": "MONTHCOLUMN_FORMATSTRING",
-    "Name": "[Formatting] Provide format string for \"Month\" columns",
-    "Category": "Formatting",
-    "Description": "Columns of type \"DateTime\" that have \"Month\" in their names should be formatted as \"MMMM yyyy\".",
-    "Severity": 3,
-    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "Name.IndexOf(\"Month\", \"OrdinalIgnoreCase\") >= 0 and DataType = \"DateTime\" and FormatString <> \"MMMM yyyy\"",
-    "FixExpression": "FormatString = \"MMMM yyyy\"",
-    "CompatibilityLevel": 1200
-  },
-  {
     "ID": "PROVIDE_FORMAT_STRING_FOR_MEASURES",
     "Name": "[Formatting] Provide format string for measures",
     "Category": "Formatting",
