@@ -437,7 +437,7 @@
     "Description": "Visible measures should have their format string property assigned",
     "Severity": 3,
     "Scope": "Measure",
-    "Expression": "not IsHidden \r\nand not Table.IsHidden \r\nand string.IsNullOrWhitespace(FormatString)\r\nand <> DataType=\"String\"",
+    "Expression": "IsVisible\nand string.IsNullOrWhitespace(FormatString)\nand (DataType = \"Int64\" or DataType = \"DateTime\" or DataType = \"Double\" or DataType = \"Decimal\")",
     "CompatibilityLevel": 1200
   },
   {
