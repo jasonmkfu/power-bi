@@ -211,5 +211,25 @@
     "Scope": "CalculatedTable",
     "Expression": "1=1",
     "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE",
+    "Name": "[Formatting] Relationship columns should be of integer data type",
+    "Category": "Formatting",
+    "Description": "It is a best practice for relationship columns to be of integer data type. This applies not only to data warehousing but data modeling as well.",
+    "Severity": 0,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "UsedInRelationships.Any()\n\nand \n\nDataType != DataType.Int64",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "PERCENTAGE_FORMATTING",
+    "Name": "[Formatting] Percentages should be formatted with thousands separators and 1 decimal",
+    "Category": "Formatting",
+    "Severity": 3,
+    "Scope": "Measure",
+    "Expression": "FormatString.Contains(\"%\") and FormatString <> \"#,0.0%;-#,0.0%;#,0.0%\"",
+    "FixExpression": "FormatString = \"#,0.0%\\u003B-#,0.0%\\u003B#,0.0%\"",
+    "CompatibilityLevel": 1200
   }
 ]
