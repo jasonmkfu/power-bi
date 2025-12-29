@@ -47,7 +47,7 @@
     "Description": "This rule looks for tables that contain the words 'date' or 'calendar' as they should likely be marked as a date table.\r\nReference: https://docs.microsoft.com/power-bi/transform-model/desktop-date-tables",
     "Severity": 3,
     "Scope": "Table, CalculatedTable",
-    "Expression": "(Name.ToUpper().Contains(\"DATE\") or Name.ToUpper().Contains(\"CALENDAR\"))\n\nand\n\n(\nDataCategory <> \"Time\"\n\nor\n\nColumns.Any(IsKey == true && DataType == \"DateTime\") == false\n)",
+    "Expression": "(Name.ToUpper() == \"CALENDAR\" or Name.ToUpper() == \"DATE\" or Name.ToUpper() == \"DATEDIM\" or Name.ToUpper() == \"CALENDARDIM\")\n\nand\n\n(\nDataCategory <> \"Time\"\n\nor\n\nColumns.Any(IsKey == true && DataType == \"DateTime\") == false\n)",
     "CompatibilityLevel": 1200
   },
   {
@@ -299,7 +299,7 @@
     "Description": "Hidden columns that are not referenced by any DAX expressions, relationships, hierarchy levels or Sort By-properties should be removed.",
     "Severity": 3,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "(IsHidden or Table.IsHidden)\n\n\r\nand ReferencedBy.Count = 0\r\n\n\nand (not UsedInRelationships.Any())\n\n\r\nand (not UsedInSortBy.Any())\n\n\r\nand (not UsedInHierarchies.Any())\n\n\r\nand (not Table.RowLevelSecurity.Any(\nit <> null and it.IndexOf(\"[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0\n))\n\n and (not Model.Roles.Any(RowLevelSecurity.Any(\nit <> null and \n(\nit.IndexOf(current.Table.Name + \"[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0 or\n it.IndexOf(\"'\" + current.Table.Name + \"'[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0\n )\n)))\r\nand not (\r\nObjectLevelSecurity.Any(it.ToString() == \"None\"))\r\nand not (\r\nTable.ObjectLevelSecurity.Any(it.ToString() == \"None\"))",
+    "Expression": "(IsHidden or Table.IsHidden)\r\n\r\n\r\nand ReferencedBy.Count = 0\r\n\r\n\r\nand (not UsedInRelationships.Any())\r\n\r\n\r\nand (not UsedInSortBy.Any())\r\n\r\n\r\nand (not UsedInHierarchies.Any())\r\n\r\n\r\nand (not Table.RowLevelSecurity.Any(\r\nit <> null and it.IndexOf(\"[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0\r\n))\r\n\r\n and (not Model.Roles.Any(RowLevelSecurity.Any(\r\nit <> null and \r\n(\r\nit.IndexOf(current.Table.Name + \"[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0 or\r\n it.IndexOf(\"'\" + current.Table.Name + \"'[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0\r\n )\r\n)))\r\nand not (\r\nObjectLevelSecurity.Any(it.ToString() == \"None\"))\r\nand not (\r\nTable.ObjectLevelSecurity.Any(it.ToString() == \"None\"))\r\nand ObjectType == \"Column\" and not (current.Table.Name.StartsWith(\"P_\"))",
     "FixExpression": "Delete()",
     "CompatibilityLevel": 1200
   },
@@ -435,7 +435,7 @@
     "Category": "Formatting",
     "Severity": 3,
     "Scope": "Measure",
-    "Expression": "not FormatString.Contains(\"$\") and not FormatString.Contains(\"%\") and not (FormatString = \"#,0\" or FormatString = \"#,0.0\")",
+    "Expression": "not FormatString.Contains(\"$\") and not FormatString.Contains(\"%\") and not (FormatString = \"#,0\" or FormatString = \"#,0.0\") and DataType != DataType.String",
     "FixExpression": "FormatString = \"#,0\"",
     "CompatibilityLevel": 1200
   },
