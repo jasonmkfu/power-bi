@@ -263,5 +263,16 @@
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
     "Expression": "Name.ToUpper().Contains(\"MONTH\")\r\nand\r\n! Name.ToUpper().Contains(\"MONTHS\") \r\nand \r\n\n\nDataType == DataType.String \r\nand \r\nSortByColumn == null",
     "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "REMOVE_ROLES_WITH_NO_MEMBERS",
+    "Name": "[Maintenance] Remove roles with no members",
+    "Category": "Maintenance",
+    "Description": "May remove roles with no members.",
+    "Severity": 3,
+    "Scope": "ModelRole",
+    "Expression": "Members.Count() == 0",
+    "FixExpression": "Delete()",
+    "CompatibilityLevel": 1200
   }
 ]

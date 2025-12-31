@@ -85,7 +85,7 @@
     "Name": "[Performance] Remove redundant columns in related tables",
     "Category": "Performance",
     "Description": "Removing unnecessary columns reduces model size and speeds up data loading.",
-    "Severity": 3,
+    "Severity": 2,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
     "Expression": "UsedInRelationships.Any() == false \r\nand\r\nModel.AllColumns.Any(Name == current.Name and Table.Name != current.Table.Name and Table.UsedInRelationships.Any(FromTable.Name == current.Table.Name))",
     "CompatibilityLevel": 1200
@@ -332,17 +332,6 @@
     "Severity": 3,
     "Scope": "ProviderDataSource, StructuredDataSource",
     "Expression": "UsedByPartitions.Count() == 0\r\nand not Model.Tables.Any(SourceExpression.Contains(OuterIt.Name))\r\nand not Model.AllPartitions.Any(Query.Contains(OuterIt.Name))",
-    "FixExpression": "Delete()",
-    "CompatibilityLevel": 1200
-  },
-  {
-    "ID": "REMOVE_ROLES_WITH_NO_MEMBERS",
-    "Name": "[Maintenance] Remove roles with no members",
-    "Category": "Maintenance",
-    "Description": "May remove roles with no members.",
-    "Severity": 3,
-    "Scope": "ModelRole",
-    "Expression": "Members.Count() == 0",
     "FixExpression": "Delete()",
     "CompatibilityLevel": 1200
   },
