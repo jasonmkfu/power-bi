@@ -424,7 +424,7 @@
     "Category": "Formatting",
     "Severity": 3,
     "Scope": "Measure",
-    "Expression": "not FormatString.Contains(\"$\") and not FormatString.Contains(\"%\") and not (FormatString = \"#,0\" or FormatString = \"#,0.0\") and DataType != DataType.String and Expression != \"BLANK()\"",
+    "Expression": "not FormatString.Contains(\"$\") and not FormatString.Contains(\"%\") and not (FormatString = \"#,0\" or FormatString = \"#,0.0\") and DataType != \"String\" and Expression != \"BLANK()\"",
     "FixExpression": "FormatString = \"#,0\"",
     "CompatibilityLevel": 1200
   },
