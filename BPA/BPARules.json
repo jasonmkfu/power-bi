@@ -85,7 +85,7 @@
     "Name": "[Performance] Remove redundant columns in related tables",
     "Category": "Performance",
     "Description": "Removing unnecessary columns reduces model size and speeds up data loading.",
-    "Severity": 2,
+    "Severity": 3,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
     "Expression": "UsedInRelationships.Any() == false \r\nand\r\nModel.AllColumns.Any(Name == current.Name and Table.Name != current.Table.Name and Table.UsedInRelationships.Any(FromTable.Name == current.Table.Name))",
     "CompatibilityLevel": 1200
@@ -137,7 +137,7 @@
     "Description": "Two measures with different names and defined by the same DAX expression should be avoided to reduce redundancy.",
     "Severity": 3,
     "Scope": "Measure",
-    "Expression": "Model.AllMeasures.Any(Expression.Replace(\" \",\"\").Replace(\"\\n\",\"\").Replace(\"\\r\",\"\").Replace(\"\\t\",\"\") = outerIt.Expression.Replace(\" \",\"\").Replace(\"\\n\",\"\").Replace(\"\\r\",\"\").Replace(\"\\t\",\"\") and it <> outerIt)",
+    "Expression": "Model.AllMeasures.Any(Expression.Replace(\" \",\"\").Replace(\"\\n\",\"\").Replace(\"\\r\",\"\").Replace(\"\\t\",\"\") = outerIt.Expression.Replace(\" \",\"\").Replace(\"\\n\",\"\").Replace(\"\\r\",\"\").Replace(\"\\t\",\"\") and it <> outerIt) and not (current.Name.Contains(\"Spacer\")) and not (current.Name.Contains(\"Header\"))",
     "CompatibilityLevel": 1200
   },
   {
@@ -422,7 +422,7 @@
     "ID": "INTEGER_FORMATTING",
     "Name": "[Formatting] Whole numbers should be formatted with thousands separators and no decimals",
     "Category": "Formatting",
-    "Severity": 3,
+    "Severity": 2,
     "Scope": "Measure",
     "Expression": "not FormatString.Contains(\"$\") and not FormatString.Contains(\"%\") and not (FormatString = \"#,0\" or FormatString = \"#,0.0\") and not (DataType == DataType.String) and Expression <> \"BLANK()\"",
     "FixExpression": "FormatString = \"#,0\"",
