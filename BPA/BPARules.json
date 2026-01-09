@@ -447,5 +447,115 @@
     "Scope": "Table, Measure, Hierarchy, CalculatedColumn, CalculatedTable, CalculatedTableColumn, CalculationGroup",
     "Expression": "Name.Substring(0,1).ToUpper() != Name.Substring(0,1)",
     "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "ADD_DATA_CATEGORY_FOR_COLUMNS",
+    "Name": "[Formatting] Add data category for columns",
+    "Category": "Formatting",
+    "Description": "Add Data Category property for appropriate columns.\r\n\r\nReference: https://docs.microsoft.com/power-bi/transform-model/desktop-data-categorization",
+    "Severity": 3,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "string.IsNullOrWhitespace(DataCategory)\r\nand\r\n(\r\n(\r\nName.ToLower().Contains(\"country\")\r\nor \r\n\nName.ToLower().Contains(\"continent\"\n)\r\nor\r\nName.ToLower().Contains(\"city\")\r\n)\r\nand DataType == \"String\"\r\n)\r\nor \r\n(\r\n(\nName.ToLower() == \"latitude\" \n or \nName.ToLower() == \"longitude\")\r\nand (DataType == DataType.Decimal or DataType == DataType.Double)\r\n)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "REMOVE_ROLES_WITH_NO_MEMBERS",
+    "Name": "[Maintenance] Remove roles with no members",
+    "Category": "Maintenance",
+    "Description": "May remove roles with no members.",
+    "Severity": 3,
+    "Scope": "ModelRole",
+    "Expression": "Members.Count() == 0",
+    "FixExpression": "Delete()",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "AVOID_BI-DIRECTIONAL_RELATIONSHIPS_AGAINST_HIGH-CARDINALITY_COLUMNS",
+    "Name": "[Performance] Avoid bi-directional relationships against high-cardinality columns",
+    "Category": "Performance",
+    "Description": "For best performance, it is recommended to avoid using bi-directional relationships against high-cardinality columns. In order to run this rule, you must first run the script shown here: https://www.elegantbi.com/post/vertipaqintabulareditor",
+    "Severity": 2,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "UsedInRelationships.Any(CrossFilteringBehavior == CrossFilteringBehavior.BothDirections)\n\nand\n\nConvert.ToInt64(GetAnnotation(\"Vertipaq_Cardinality\")) > 100000",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "AVOID_EXCESSIVE_BI-DIRECTIONAL_OR_MANY-TO-MANY_RELATIONSHIPS",
+    "Name": "[Performance] Avoid excessive bi-directional or many-to-many relationships",
+    "Category": "Performance",
+    "Description": "Limit use of b-di and many-to-many relationships. This rule flags the model if more than 30% of relationships are bi-di or many-to-many.\r\nReference: https://www.sqlbi.com/articles/bidirectional-relationships-and-ambiguity-in-dax/",
+    "Severity": 2,
+    "Scope": "Model",
+    "Expression": "(\r\n\nRelationships.Where(CrossFilteringBehavior == CrossFilteringBehavior.BothDirections).Count()\r\n\n+\r\n\nRelationships.Where(FromCardinality.ToString() == \"Many\" && ToCardinality.ToString() == \"Many\").Count()\r\n\n)\r\n\n\n/\r\n\n\nMath.Max(Convert.ToDecimal(Relationships.Count)\n\n,1)> 0.3",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "CHECK_IF_BI-DIRECTIONAL_AND_MANY-TO-MANY_RELATIONSHIPS_ARE_VALID",
+    "Name": "[Performance] Check if bi-directional and many-to-many relationships are valid",
+    "Category": "Performance",
+    "Description": "Bi-directional and many-to-many relationships may cause performance degradation or even have unintended consequences. Make sure to check these specific relationships to ensure they are working as designed and are actually necessary.\r\nReference: https://www.sqlbi.com/articles/bidirectional-relationships-and-ambiguity-in-dax/",
+    "Severity": 2,
+    "Scope": "Relationship",
+    "Expression": "FromCardinality.ToString() = \"Many\" and ToCardinality.ToString() = \"Many\"\r\nor\r\nCrossFilteringBehavior == CrossFilteringBehavior.BothDirections",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "CHECK_IF_DYNAMIC_ROW_LEVEL_SECURITY_(RLS)_IS_NECESSARY",
+    "Name": "[Performance] Check if dynamic row level security (RLS) is necessary",
+    "Category": "Performance",
+    "Description": "Usage of dynamic row level security (RLS) can add memory and performance overhead. Please research the pros/cons of using it.\r\nReference: https://docs.microsoft.com/power-bi/admin/service-admin-rls",
+    "Severity": 2,
+    "Scope": "TablePermission",
+    "Expression": "RegEx.IsMatch(Expression,\"(?i)USERNAME\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"(?i)USERPRINCIPALNAME\\(\")",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "MODEL_USING_DIRECT_QUERY_AND_NO_AGGREGATIONS",
+    "Name": "[Performance] Consider using aggregations if using Direct Query in Power BI",
+    "Category": "Performance",
+    "Description": "If using Direct Query in Power BI Premium, you may want to consider using aggregations in order to boost performance.\r\nReference: https://docs.microsoft.com/power-bi/transform-model/desktop-aggregations",
+    "Severity": 2,
+    "Scope": "Model",
+    "Expression": "Tables.Any(ObjectTypeName == \"Table (DirectQuery)\")\r\nand\r\n\n\nAllColumns.Any(AlternateOf != null) == false\r\nand \r\nDefaultPowerBIDataSourceVersion.ToString() == \"PowerBI_V3\"",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "LIMIT_ROW_LEVEL_SECURITY_(RLS)_LOGIC",
+    "Name": "[Performance] Limit row level security (RLS) logic",
+    "Category": "Performance",
+    "Description": "Try to simplify the DAX used for row level security. Usage of the functions within this rule can likely be offloaded to the upstream systems (data warehouse).",
+    "Severity": 2,
+    "Scope": "Table, CalculatedTable",
+    "Expression": "RowLevelSecurity.Any(RegEx.IsMatch(it.Replace(\" \",\"\"),\"(?i)RIGHT\\s*\\(\"))\r\nor\r\nRowLevelSecurity.Any(RegEx.IsMatch(it.Replace(\" \",\"\"),\"(?i)LEFT\\s*\\(\"))\r\nor\r\nRowLevelSecurity.Any(RegEx.IsMatch(it.Replace(\" \",\"\"),\"(?i)UPPER\\s*\\(\"))\r\nor\r\nRowLevelSecurity.Any(RegEx.IsMatch(it.Replace(\" \",\"\"),\"(?i)LOWER\\s*\\(\"))\r\nor\r\nRowLevelSecurity.Any(RegEx.IsMatch(it.Replace(\" \",\"\"),\"(?i)FIND\\s*\\(\"))\r\n",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "MANY-TO-MANY_RELATIONSHIPS_SHOULD_BE_SINGLE-DIRECTION",
+    "Name": "[Performance] Many-to-many relationships should be single-direction",
+    "Category": "Performance",
+    "Severity": 2,
+    "Scope": "Relationship",
+    "Expression": "FromCardinality == \"Many\"\n\r\nand\r\n\nToCardinality == \"Many\"\r\n\nand\r\n\nCrossFilteringBehavior == \"BothDirections\"",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "MINIMIZE_POWER_QUERY_TRANSFORMATIONS",
+    "Name": "[Performance] Minimize Power Query transformations",
+    "Category": "Performance",
+    "Description": "Minimize Power Query transformations in order to improve model processing performance. It is a best practice to offload these transformations to the data warehouse if possible. Also, please check whether query folding is occurring within your model. Please reference the article below for more information on query folding.\r\nReference: https://docs.microsoft.com/power-query/power-query-folding",
+    "Severity": 2,
+    "Scope": "Partition",
+    "Expression": "\nSourceType.ToString() = \"M\"\r\nand\r\n(\r\nQuery.Contains(\"Table.Combine(\")\r\nor\r\n\nQuery.Contains(\"Table.Join(\")\r\nor\r\n\nQuery.Contains(\"Table.NestedJoin(\")\r\nor\r\nQuery.Contains(\"Table.AddColumn(\")\r\nor\r\nQuery.Contains(\"Table.Group(\")\r\nor\r\nQuery.Contains(\"Table.Sort(\")\r\nor\r\nQuery.Contains(\"Table.Pivot(\")\r\nor\r\nQuery.Contains(\"Table.Unpivot(\")\r\nor\r\nQuery.Contains(\"Table.UnpivotOtherColumns(\")\r\nor\r\nQuery.Contains(\"Table.Distinct(\")\r\nor\r\nQuery.Contains(\"[Query=\"\"SELECT\")\r\nor\r\nQuery.Contains(\"Value.NativeQuery\")\r\nor\r\nQuery.Contains(\"OleDb.Query\")\r\nor\r\nQuery.Contains(\"Odbc.Query\")\r\n)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "MODEL_SHOULD_HAVE_A_DATE_TABLE",
+    "Name": "[Performance] Model should have a date table",
+    "Category": "Performance",
+    "Description": "Generally speaking, models should generally have a date table. Models that do not have a date table generally are not taking advantage of features such as time intelligence or may not have a properly structured architecture.",
+    "Severity": 3,
+    "Scope": "Model",
+    "Expression": "Tables.Any(DataCategory == \"Time\" && Columns.Any(IsKey == true && DataType == \"DateTime\")) == false",
+    "CompatibilityLevel": 1200
   }
 ]
