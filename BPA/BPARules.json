@@ -460,17 +460,6 @@
     "CompatibilityLevel": 1200
 },
 {
-    "ID": "REMOVE_ROLES_WITH_NO_MEMBERS",
-    "Name": "[Maintenance] Remove roles with no members",
-    "Category": "Maintenance",
-    "Description": "May remove roles with no members.",
-    "Severity": 3,
-    "Scope": "ModelRole",
-    "Expression": "Members.Count() == 0",
-    "FixExpression": "Delete()",
-    "CompatibilityLevel": 1200
-},
-{
     "ID": "AVOID_BI-DIRECTIONAL_RELATIONSHIPS_AGAINST_HIGH-CARDINALITY_COLUMNS",
     "Name": "[Performance] Avoid bi-directional relationships against high-cardinality columns",
     "Category": "Performance",
