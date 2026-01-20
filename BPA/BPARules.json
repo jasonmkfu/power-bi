@@ -455,7 +455,7 @@
     "Description": "Add Data Category property for appropriate columns.\r\n\r\nReference: https://docs.microsoft.com/power-bi/transform-model/desktop-data-categorization",
     "Severity": 3,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "string.IsNullOrWhitespace(DataCategory)\r\nand\r\n(\r\n(\r\nName.ToLower().Contains(\"country\")\r\nor \r\n\nName.ToLower().Contains(\"continent\"\n)\r\nor\r\nName.ToLower().Contains(\"city\")\r\n)\r\nand DataType == \"String\"\r\nand not\r\nName.ToLower().Contains(\"ethnicity\")\r\n)\r\nor \r\n(\r\n(\nName.ToLower() == \"latitude\" \n or \nName.ToLower() == \"longitude\")\r\nand (DataType == DataType.Decimal or DataType == DataType.Double)\r\n)",
+    "Expression": "string.IsNullOrWhitespace(DataCategory) and (((Name.ToLower().Contains(\"country\") or Name.ToLower().Contains(\"continent\") or Name.ToLower().Contains(\"city\")) and DataType == \"String\" and not Name.ToLower().Contains(\"ethnicity\")) or ((Name.ToLower() == \"latitude\"  or Name.ToLower() == \"longitude\") and (DataType == DataType.Decimal or DataType == DataType.Double)))",
     "CompatibilityLevel": 1200
 },
 {
